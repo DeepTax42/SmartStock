@@ -45,16 +45,6 @@ export default function Home() {
             SmartStock AI는 AI 기반 수요 예측과 재고 관리로 
             판매사의 효율성을 극대화합니다
           </p>
-          <div className="flex gap-4 justify-center flex-wrap pt-4">
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="text-lg px-8 py-6"
-              onClick={() => navigate("/help")}
-            >
-              더 알아보기
-            </Button>
-          </div>
         </div>
       </section>
 
@@ -93,24 +83,6 @@ export default function Home() {
             <div className="text-4xl font-bold text-primary mb-2">1,000+</div>
             <p className="text-muted-foreground">활성 사용자</p>
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="bg-primary text-primary-foreground py-16 mt-16">
-        <div className="container mx-auto max-w-[1200px] px-5 text-center">
-          <h2 className="text-3xl font-bold mb-4">지금 바로 시작하세요</h2>
-          <p className="text-xl mb-8 opacity-90">
-            14일 무료 체험, 신용카드 불필요
-          </p>
-          <Button 
-            size="lg" 
-            variant="secondary" 
-            className="text-lg px-8 py-6"
-            onClick={() => navigate("/login?tab=signup")}
-          >
-            무료 체험 시작
-          </Button>
         </div>
       </section>
 

@@ -3,22 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
+import { Textarea } from "../components/ui/textarea";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "../components/ui/dialog";
 import { 
   LineChart, Line, BarChart, Bar, XAxis, YAxis, 
-  CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart 
+  CartesianGrid, Tooltip, Legend, ResponsiveContainer 
 } from "recharts";
-import { 
-  TrendingUp, TrendingDown, AlertTriangle, Package, 
-  Upload 
-} from "lucide-react";
+import { TrendingUp, TrendingDown, AlertTriangle, Upload, Edit, X, Save, Download } from "lucide-react";
 import { analyticsService } from "../services/analyticsService";
+import { uploadService } from "../services/uploadService";
+import Footer from "../components/Footer";
 
-const topProducts = [
-  { name: "제품 A", forecast: 1250, stock: 800, status: "부족" },
-  { name: "제품 B", forecast: 980, stock: 1200, status: "적정" },
-  { name: "제품 C", forecast: 2100, stock: 500, status: "심각" },
-  { name: "제품 D", forecast: 750, stock: 850, status: "적정" },
-];
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -27,10 +22,17 @@ export default function Dashboard() {
     accuracy: 0,
     wape: 0,
     stock_alerts: 0,
-    total_value: 0
+    total_value: 0,
   });
+  const [uploadList, setUploadList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // ✅ 파일 편집 관련 상태
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingFile, setEditingFile] = useState(null);
+  const [fileContent, setFileContent] = useState("");
+  const [loadingContent, setLoadingContent] = useState(false);
 
   useEffect(() => {
     loadDashboardData();
@@ -40,14 +42,83 @@ export default function Dashboard() {
     try {
       setLoading(true);
       setError(null);
-      const data = await analyticsService.getSummary();
-      setChartData(data.chart_data);
-      setKpiData(data.kpi);
+
+      const [analyticsData, uploads] = await Promise.all([
+        analyticsService.getSummary(),
+        uploadService.getUploadList(),
+      ]);
+
+      setChartData(analyticsData.chart_data);
+      setKpiData(analyticsData.kpi);
+      setUploadList(uploads.items || uploads);
     } catch (error) {
-      console.error('Dashboard 데이터 로딩 실패:', error);
-      setError('데이터를 불러오는데 실패했습니다.');
+      console.error("Dashboard 데이터 로딩 실패:", error);
+      setError("데이터를 불러오는데 실패했습니다.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // ✅ 파일 내용 불러오기
+  const loadFileContent = async (filename) => {
+    try {
+      setLoadingContent(true);
+      const content = await uploadService.getFileContent(filename);
+      setFileContent(content);
+    } catch (err) {
+      console.error("파일 로딩 실패:", err);
+      alert("파일을 불러오는데 실패했습니다.");
+      setEditDialogOpen(false);
+    } finally {
+      setLoadingContent(false);
+    }
+  };
+
+  // ✅ 파일 편집 모달 열기
+  const openEditDialog = async (item) => {
+    setEditingFile(item);
+    setEditDialogOpen(true);
+    await loadFileContent(item.stored_filename);
+  };
+
+  // ✅ 파일 편집 모달 닫기
+  const closeEditDialog = () => {
+    setEditDialogOpen(false);
+    setEditingFile(null);
+    setFileContent("");
+  };
+
+  // ✅ 파일 내용 저장
+  const saveFileContent = async () => {
+    if (!editingFile) return;
+
+    try {
+      await uploadService.updateFileContent(editingFile.stored_filename, fileContent);
+      alert("파일이 성공적으로 저장되었습니다!");
+      closeEditDialog();
+      loadDashboardData(); // 목록 새로고침
+    } catch (err) {
+      console.error("파일 저장 실패:", err);
+      alert("파일 저장에 실패했습니다.");
+    }
+  };
+
+  // ✅ 파일 다운로드
+  const downloadFile = async (filename) => {
+    try {
+      const content = await uploadService.getFileContent(filename);
+      const blob = new Blob([content], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (err) {
+      console.error("다운로드 실패:", err);
+      alert("파일 다운로드에 실패했습니다.");
     }
   };
 
@@ -76,199 +147,142 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">대시보드</h1>
-        <p className="text-muted-foreground">
-          AI 기반 수요 예측 및 재고 현황을 한눈에 확인하세요
-        </p>
-      </div>
-
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">예측 정확도</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{kpiData.accuracy}%</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              <span className="text-green-600 font-medium">+2.1%</span> 전월 대비
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">WAPE</CardTitle>
-            <TrendingDown className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{kpiData.wape}%</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              <span className="text-green-600 font-medium">-0.5%</span> 전월 대비
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">품절 위험 품목</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{kpiData.stock_alerts}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              <span className="text-red-600 font-medium">+3</span> 전월 대비
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">총 재고 가치</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              ₩{(kpiData.total_value / 1000000).toFixed(1)}M
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              <span className="text-green-600 font-medium">-5.2%</span> 전월 대비
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>수요 예측 vs 실제 수요</CardTitle>
-            <CardDescription>최근 6개월 트렌드 분석</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <ComposedChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="재고" fill="#E9EDF3" />
-                  <Line 
-                    type="monotone" 
-                    dataKey="실제수요" 
-                    stroke="#335C81" 
-                    strokeWidth={2} 
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="AI예측" 
-                    stroke="#D9853B" 
-                    strokeWidth={2} 
-                    strokeDasharray="5 5" 
-                  />
-                </ComposedChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                데이터가 없습니다
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>품목별 예측 정확도</CardTitle>
-            <CardDescription>상위 품목 분석</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="실제수요" fill="#335C81" />
-                  <Bar dataKey="AI예측" fill="#D9853B" />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                데이터가 없습니다
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Top Products Table */}
       <Card>
         <CardHeader>
-          <CardTitle>품절 위험 품목</CardTitle>
-          <CardDescription>즉시 조치가 필요한 품목</CardDescription>
+          <CardTitle>업로드 내역</CardTitle>
+          <CardDescription>최근 업로드된 데이터 파일 목록</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {topProducts.map((product, idx) => (
-              <div 
-                key={idx} 
-                className="flex items-center justify-between p-4 border rounded-lg hover:border-primary/50 transition"
-              >
-                <div className="flex-1">
-                  <h4 className="font-semibold">{product.name}</h4>
-                  <p className="text-sm text-muted-foreground">
-                    예측 수요: {product.forecast} | 현재 재고: {product.stock}
-                  </p>
-                </div>
-                <Badge
-                  variant={
-                    product.status === "심각" 
-                      ? "destructive" 
-                      : product.status === "부족" 
-                      ? "default" 
-                      : "secondary"
-                  }
-                >
-                  {product.status}
-                </Badge>
-              </div>
-            ))}
-          </div>
+          {uploadList.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b bg-muted/30">
+                    <th className="text-left py-2 px-4">ID</th>
+                    <th className="text-left py-2 px-4">파일명</th>
+                    <th className="text-left py-2 px-4">업로드 일시</th>
+                    <th className="text-left py-2 px-4">상태</th>
+                    <th className="text-left py-2 px-4 text-right">작업</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {uploadList.map((item) => (
+                    <tr key={item.id} className="border-b hover:bg-muted/20 transition">
+                      <td className="py-2 px-4">{item.id}</td>
+                      <td className="py-2 px-4">{item.stored_filename || "이름 없음"}</td>
+                      <td className="py-2 px-4">
+                        {item.created_at
+                          ? new Date(item.created_at).toLocaleString("ko-KR")
+                          : "-"}
+                      </td>
+                      <td className="py-2 px-4">
+                        <Badge
+                          variant={
+                            item.status === "완료"
+                              ? "secondary"
+                              : item.status === "실패"
+                              ? "destructive"
+                              : "default"
+                          }
+                        >
+                          {item.status || "진행중"}
+                        </Badge>
+                      </td>
+                      <td className="py-2 px-4">
+                        <div className="flex gap-2 justify-end">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => navigate(`/upload/${item.id}`)}
+                          >
+                            예시 보기
+                          </Button>
+
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openEditDialog(item)}
+                          >
+                            <Edit className="h-4 w-4 mr-1" />
+                            수정
+                          </Button>
+
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => downloadFile(item.stored_filename)}
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
+
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={async () => {
+                              if (!window.confirm("정말 삭제하시겠습니까?")) return;
+                              try {
+                                await uploadService.deleteUpload(item.stored_filename);
+                                alert("삭제 완료!");
+                                setUploadList((prev) => 
+                                  prev.filter((u) => u.stored_filename !== item.stored_filename)
+                                );
+                              } catch (err) {
+                                console.error(err);
+                                alert("삭제 실패");
+                              }
+                            }}
+                          >
+                            삭제
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="text-muted-foreground text-center py-4">
+              업로드된 파일이 없습니다.
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Button 
-          className="h-auto py-6 flex flex-col gap-2" 
-          onClick={() => navigate("/prediction")}
-        >
-          <TrendingUp className="h-6 w-6" />
-          <span>예측 결과 보기</span>
-        </Button>
-        <Button 
-          className="h-auto py-6 flex flex-col gap-2" 
-          variant="outline" 
-          onClick={() => navigate("/order")}
-        >
-          <Package className="h-6 w-6" />
-          <span>발주 추천</span>
-        </Button>
-        <Button 
-          className="h-auto py-6 flex flex-col gap-2" 
-          variant="outline" 
-          onClick={() => navigate("/upload")}
-        >
-          <Upload className="h-6 w-6" />
-          <span>새 데이터 업로드</span>
-        </Button>
-      </div>
+      {/* ✅ 파일 편집 다이얼로그 */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>파일 수정</DialogTitle>
+            <DialogDescription>
+              {editingFile?.stored_filename}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {loadingContent ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <Textarea
+              value={fileContent}
+              onChange={(e) => setFileContent(e.target.value)}
+              className="min-h-[400px] font-mono text-sm"
+              placeholder="파일 내용을 입력하세요..."
+            />
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={closeEditDialog}>
+              취소
+            </Button>
+            <Button onClick={saveFileContent}>
+              <Save className="h-4 w-4 mr-2" />
+              저장
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

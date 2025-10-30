@@ -1,4 +1,6 @@
 import apiClient from './api';
+import axios from "axios";
+
 
 export const uploadService = {
   uploadFile: async (file, tenantId = 1) => {
@@ -17,9 +19,17 @@ export const uploadService = {
     return response.data;
   },
 
+  deleteUpload: async (stored_filename) => {
+    const api = axios.create({
+      baseURL: "http://localhost:8000/api/v1", // FastAPI 서버 주소
+    });
+    const res = await api.delete(`/upload/${stored_filename}`);
+    return res.data;
+  },
+  
   getUploadProfile: async (uploadJobId, tenantId = 1) => {
     const response = await apiClient.get(
-      `/upload/${uploadJobId}?tenant_id=${tenantId}`
+      `/upload/${uploadJobId}`
     );
     return response.data;
   },
@@ -30,4 +40,9 @@ export const uploadService = {
     );
     return response.data;
   },
+  
+  
+
 };
+
+
