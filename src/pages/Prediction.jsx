@@ -16,16 +16,14 @@ export default function Prediction() {
     if (!selectedFile) return;
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/prediction/predict`,
+        '/api/v1/prediction/predict',   // ✅ 절대주소 → 프록시 경로
         { stored_filename: selectedFile.filename }
       );
-
       setPredictionResult(res.data.predictions);
     } catch (err) {
-      console.error("예측 요청 실패:", err);
+      console.error('예측 요청 실패:', err);
     }
   };
-
 
   useEffect(() => {
     const fetchFiles = async () => {

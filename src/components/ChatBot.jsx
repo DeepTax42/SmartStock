@@ -20,7 +20,7 @@ export function ChatBot() {
   const scrollRef = useRef(null);
 
   // ✅ FastAPI 백엔드 URL (환경변수로 관리)
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  const API_URL = '/api/v1';
 
   // -------------------------------
   // Order 페이지 데이터 감지 및 분석

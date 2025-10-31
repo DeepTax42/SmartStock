@@ -21,8 +21,9 @@ export const uploadService = {
 
   deleteUpload: async (stored_filename) => {
     const api = axios.create({
-      baseURL: "http://ec2-43-203-159-41.ap-northeast-2.compute.amazonaws.com:8000/api/v1", // FastAPI 서버 주소
-    });
+      baseURL: "/api/v1", // ✅ 프록시 경로로 변경
+  });
+
     const res = await api.delete(`/upload/${stored_filename}`);
     return res.data;
   },
