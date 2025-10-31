@@ -164,7 +164,7 @@ ${sample}
     `;
 
     // ✅ 백엔드 API 호출
-    const response = await fetch(`${API_URL}/api/v1/chatbot/chat`, {
+    const response = await fetch(`${API_URL}/chatbot/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
