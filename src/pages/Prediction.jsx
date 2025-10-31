@@ -28,7 +28,7 @@ export default function Prediction() {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const res = await axios.get("/api/v1/files");
+        const res = await axios.get("/api/files");
         setFiles(res.data.files);
       } catch (err) {
         console.error("파일 목록 불러오기 실패:", err);
