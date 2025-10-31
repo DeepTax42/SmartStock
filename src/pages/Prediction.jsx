@@ -16,9 +16,10 @@ export default function Prediction() {
     if (!selectedFile) return;
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/v1/prediction/predict",
-        { stored_filename: selectedFile.filename } // POST body로 전달
+        `${import.meta.env.VITE_API_URL}/prediction/predict`,
+        { stored_filename: selectedFile.filename }
       );
+
       setPredictionResult(res.data.predictions);
     } catch (err) {
       console.error("예측 요청 실패:", err);
