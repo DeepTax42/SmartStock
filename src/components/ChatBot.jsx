@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Card } from "./ui/card";
 import { ScrollArea } from "./ui/scroll-area";
+import apiClient from "../api";   // ✅ 추가
 
 export function ChatBot() {
   const { inventoryData, fileName } = useInventory();
@@ -165,21 +166,18 @@ ${sample}
 
     // ✅ 백엔드 API 호출
     const response = await apiClient.post('/chatbot/chat', {
-      messages: [
-      { role: 'system', content: '너는 SmartStock 재고 분석 AI 어시스턴트다.' },
-      { role: 'user', content: prompt },
-    ],
-    temperature: 0.3,
-    maxTokens: 1000,
-  });
+  messages: [
+    { role: 'system', content: '너는 SmartStock 재고 분석 AI 어시스턴트다.' },
+    { role: 'user', content: prompt },
+  ],
+  temperature: 0.3,
+  maxTokens: 1000,
+});
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || '서버 응답 오류');
-    }
+// axios는 fetch처럼 response.ok / response.json() 안 써
+// 데이터는 response.data에 바로 담겨 있음
+return response.data.reply ?? response.data.response ?? '응답이 없습니다.';
 
-    const data = await response.json();
-    return data.response;
   };
 
   // -------------------------------
