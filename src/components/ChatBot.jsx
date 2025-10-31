@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Card } from "./ui/card";
 import { ScrollArea } from "./ui/scroll-area";
-import apiClient from "../api";   // ✅ 추가
+import apiClient from '../services/apis';
 
 export function ChatBot() {
   const { inventoryData, fileName } = useInventory();
@@ -170,44 +170,7 @@ ${sample}
   ],
   temperature: 0.3,
   maxTokens: 1000,
-});const generateAIResponse = async (query) => {
-  if (!analyzedData) {
-    return '먼저 발주 페이지에서 재고 데이터를 업로드하거나, 직접 파일을 업로드해주세요.';
-  }
-
-  const summary = JSON.stringify(analyzedData.insights, null, 2);
-  const sample = analyzedData.items
-    .slice(0, 5)
-    .map((i) => `${i.name}: 평균재고 ${i.avgStock}, 최소가용 ${i.minAvailable}, 상태 ${i.status}`)
-    .join('\n');
-
-  const prompt = `
-당신은 재고 관리 전문가입니다.
-다음은 분석된 재고 데이터 요약입니다.
-
-[재고 인사이트]
-${summary}
-
-[대표 상품]
-${sample}
-
-사용자의 질문에 따라 데이터 기반으로 간결하고 명확히 답변하세요.
-사용자 질문: ${query}
-  `;
-
-  // ✅ 여기! 딱 이 한 줄만 이렇게
-  const response = await apiClient.post('/chatbot/chat', {
-    messages: [
-      { role: 'system', content: '너는 SmartStock 재고 분석 AI 어시스턴트다.' },
-      { role: 'user', content: prompt },
-    ],
-    temperature: 0.3,
-    maxTokens: 1000,
-  });
-
-  // axios 응답
-  return response.data.reply ?? response.data.response ?? '응답이 없습니다.';
-};
+});
 
 // axios는 fetch처럼 response.ok / response.json() 안 써
 // 데이터는 response.data에 바로 담겨 있음
