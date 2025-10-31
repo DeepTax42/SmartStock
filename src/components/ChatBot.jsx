@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Card } from "./ui/card";
 import { ScrollArea } from "./ui/scroll-area";
-import apiClient from "../services/api"; // ✅ 경로만 수정
+import apiClient from "../services/api"; // ← ← ← 이 줄만 진짜 중요
 
 export function ChatBot() {
   const { inventoryData, fileName } = useInventory();
@@ -24,19 +24,14 @@ export function ChatBot() {
   const [analyzedData, setAnalyzedData] = useState(null);
   const scrollRef = useRef(null);
 
-  // -------------------------------
-  // Order 페이지 데이터 감지 및 분석
-  // -------------------------------
   useEffect(() => {
     if (inventoryData && inventoryData.length > 0) {
-      // 같은 데이터면 다시 분석 안 함
       if (analyzedData && fileData === inventoryData) return;
 
       const analysis = analyzeData(inventoryData);
       setAnalyzedData(analysis);
       setFileData(inventoryData);
 
-      // 처음 한 번만 안내 메시지 추가
       if (messages.length <= 1) {
         setMessages((prev) => [
           ...prev,
@@ -55,9 +50,6 @@ export function ChatBot() {
     }
   }, [inventoryData]);
 
-  // -------------------------------
-  // 데이터 분석 함수
-  // -------------------------------
   const analyzeData = (data) => {
     if (!data || data.length === 0) return null;
 
@@ -158,9 +150,6 @@ export function ChatBot() {
     };
   };
 
-  // -------------------------------
-  // ✅ 백엔드 API를 통한 LLM 호출
-  // -------------------------------
   const generateAIResponse = async (query) => {
     if (!analyzedData) {
       return "먼저 발주 페이지에서 재고 데이터를 업로드하거나, 직접 파일을 업로드해주세요.";
@@ -194,7 +183,6 @@ ${sample}
 사용자 질문: ${query}
     `;
 
-    // ✅ 여기만 axios 스타일로
     const response = await apiClient.post("/chatbot/chat", {
       messages: [
         { role: "system", content: "너는 SmartStock 재고 분석 AI 어시스턴트다." },
@@ -204,7 +192,6 @@ ${sample}
       maxTokens: 1000,
     });
 
-    // 백엔드가 뭐라고 리턴하든 안전하게 꺼내기
     return (
       response.data?.reply ??
       response.data?.response ??
@@ -212,9 +199,6 @@ ${sample}
     );
   };
 
-  // -------------------------------
-  // 메시지 전송 (백엔드 API 호출)
-  // -------------------------------
   const handleSend = async () => {
     if (!input.trim()) return;
 
@@ -250,9 +234,6 @@ ${sample}
     }
   }, [messages]);
 
-  // -------------------------------
-  // UI 렌더링
-  // -------------------------------
   return (
     <>
       {isOpen && (
