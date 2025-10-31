@@ -164,20 +164,14 @@ ${sample}
     `;
 
     // ✅ 백엔드 API 호출
-    const response = await fetch(`${API_URL}/chatbot/chat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        messages: [
-          { role: "system", content: "너는 SmartStock 재고 분석 AI 어시스턴트야." },
-          { role: "user", content: prompt }
-        ],
-        temperature: 0.3,
-        maxTokens: 1000
-      }),
-    });
+    const response = await apiClient.post('/chatbot/chat', {
+      messages: [
+      { role: 'system', content: '너는 SmartStock 재고 분석 AI 어시스턴트다.' },
+      { role: 'user', content: prompt },
+    ],
+    temperature: 0.3,
+    maxTokens: 1000,
+  });
 
     if (!response.ok) {
       const errorData = await response.json();
