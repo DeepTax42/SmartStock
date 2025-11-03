@@ -81,8 +81,8 @@ export default function Prediction() {
                       }
                     >
                       <Download className="h-4 w-4 mr-2" />
-                      다운로드
-                    </Button>
+                  다운로드
+                      </Button>
 
                     </TableCell>
                   </TableRow>
