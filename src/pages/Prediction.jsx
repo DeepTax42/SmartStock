@@ -1,21 +1,40 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../components/ui/table";
 import { Button } from "../components/ui/button";
 import { Download } from "lucide-react";
 
+const BACKEND_BASE =
+  import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+
 export default function Prediction() {
   const [files, setFiles] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null); // 체크된 파일 저장
+  const [selectedFile, setSelectedFile] = useState(null);
   const [predictionResult, setPredictionResult] = useState(null);
 
+  // 예측 버튼
   const handlePredict = async () => {
     if (!selectedFile) return;
     try {
       const res = await axios.post(
-        "/api/v1/prediction/predict", // ✅ 절대주소 → 프록시 경로
-        { stored_filename: selectedFile.filename }
+        `${BACKEND_BASE}/api/v1/prediction/predict`,
+        {
+          stored_filename: selectedFile.filename,
+        }
       );
       setPredictionResult(res.data.predictions);
     } catch (err) {
@@ -23,10 +42,11 @@ export default function Prediction() {
     }
   };
 
+  // 파일 목록 가져오기
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const res = await axios.get("/api/files");
+        const res = await axios.get(`${BACKEND_BASE}/api/files`);
         setFiles(res.data.files);
       } catch (err) {
         console.error("파일 목록 불러오기 실패:", err);
@@ -41,7 +61,9 @@ export default function Prediction() {
       <Card>
         <CardHeader>
           <CardTitle>업로드된 파일 목록</CardTitle>
-          <CardDescription>backend/uploads 폴더의 파일들이 자동으로 표시됩니다.</CardDescription>
+          <CardDescription>
+            backend/uploads 폴더의 파일들이 자동으로 표시됩니다.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -72,10 +94,7 @@ export default function Prediction() {
                         variant="outline"
                         size="sm"
                         onClick={() =>
-                          window.open(
-                            `${process.env.NEXT_PUBLIC_BACKEND_URL}${file.url}`,
-                            "_blank"
-                          )
+                          window.open(`${BACKEND_BASE}${file.url}`, "_blank")
                         }
                       >
                         <Download className="h-4 w-4 mr-2" />
@@ -86,7 +105,10 @@ export default function Prediction() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  <TableCell
+                    colSpan={4}
+                    className="text-center text-muted-foreground"
+                  >
                     업로드된 파일이 없습니다.
                   </TableCell>
                 </TableRow>
@@ -96,7 +118,7 @@ export default function Prediction() {
         </CardContent>
       </Card>
 
-      {/* 선택된 파일 표시 */}
+      {/* 선택된 파일 정보 */}
       {selectedFile && (
         <Card>
           <CardHeader>
@@ -116,20 +138,26 @@ export default function Prediction() {
           </CardContent>
         </Card>
       )}
+
+      {/* 예측 결과 */}
       {predictionResult && (
         <Card>
           <CardHeader>
             <CardTitle>예측 결과</CardTitle>
-            <CardDescription>아래는 미리보기입니다 (새로고침시 사라짐!!)</CardDescription>
+            <CardDescription>
+              아래는 미리보기입니다 (새로고침시 사라짐!!)
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {Object.entries(predictionResult).map(([productName, preds]) => (
-              <div key={productName}>
-                <h4>{productName}</h4>
-                <ul>
+              <div key={productName} className="mb-4">
+                <h4 className="font-semibold mb-2">{productName}</h4>
+                <ul className="list-disc list-inside space-y-1">
                   {preds.map((dayPred, idx) => (
                     <li key={idx}>
-                      Day {idx + 1} - 재고: {dayPred[0]}, 가용재고: {dayPred[1]}, 재고예정: {dayPred[2]}
+                      Day {idx + 1} - 재고: {dayPred[0]}, 가용재고: {dayPred[1]},
+                      {" "}
+                      재고예정: {dayPred[2]}
                     </li>
                   ))}
                 </ul>
