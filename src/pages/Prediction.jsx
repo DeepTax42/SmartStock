@@ -10,16 +10,18 @@ export default function Prediction() {
   const [selectedFile, setSelectedFile] = useState(null); // 체크된 파일 저장
   const [predictionResult, setPredictionResult] = useState(null);
 
+
+  
   const handlePredict = async () => {
     if (!selectedFile) return;
     try {
       const res = await axios.post(
-        "/api/v1/prediction/predict", // ✅ 절대주소 → 프록시 경로
+        '/api/v1/prediction/predict',   // ✅ 절대주소 → 프록시 경로
         { stored_filename: selectedFile.filename }
       );
       setPredictionResult(res.data.predictions);
     } catch (err) {
-      console.error("예측 요청 실패:", err);
+      console.error('예측 요청 실패:', err);
     }
   };
 
@@ -69,18 +71,19 @@ export default function Prediction() {
                     <TableCell>{file.size_kb}</TableCell>
                     <TableCell>
                       <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          window.open(
-                            `${process.env.NEXT_PUBLIC_BACKEND_URL}${file.url}`,
-                            "_blank"
-                          )
-                        }
-                      >
-                        <Download className="h-4 w-4 mr-2" />
-                        다운로드
-                      </Button>
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        window.open(
+                          `${process.env.NEXT_PUBLIC_BACKEND_URL}${file.url}`,
+                          "_blank"
+                        )
+                      }
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      다운로드
+                    </Button>
+
                     </TableCell>
                   </TableRow>
                 ))
@@ -104,12 +107,8 @@ export default function Prediction() {
             <CardDescription>아래는 선택된 파일 정보입니다.</CardDescription>
           </CardHeader>
           <CardContent>
-            <p>
-              <strong>파일명:</strong> {selectedFile.filename}
-            </p>
-            <p>
-              <strong>크기:</strong> {selectedFile.size_kb} KB
-            </p>
+            <p><strong>파일명:</strong> {selectedFile.filename}</p>
+            <p><strong>크기:</strong> {selectedFile.size_kb} KB</p>
             <Button onClick={handlePredict} disabled={!selectedFile}>
               선택 파일 예측
             </Button>
@@ -117,27 +116,27 @@ export default function Prediction() {
         </Card>
       )}
       {predictionResult && (
-        <Card>
-          <CardHeader>
-            <CardTitle>예측 결과</CardTitle>
-            <CardDescription>아래는 미리보기입니다 (새로고침시 사라짐!!)</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {Object.entries(predictionResult).map(([productName, preds]) => (
-              <div key={productName}>
-                <h4>{productName}</h4>
-                <ul>
-                  {preds.map((dayPred, idx) => (
-                    <li key={idx}>
-                      Day {idx + 1} - 재고: {dayPred[0]}, 가용재고: {dayPred[1]}, 재고예정: {dayPred[2]}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
+          <Card>
+            <CardHeader>
+              <CardTitle>예측 결과</CardTitle>
+              <CardDescription>아래는 미리보기입니다 (새로고침시 사라짐!!)</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {Object.entries(predictionResult).map(([productName, preds]) => (
+                <div key={productName}>
+                  <h4>{productName}</h4>
+                  <ul>
+                    {preds.map((dayPred, idx) => (
+                      <li key={idx}>
+                        Day {idx + 1} - 재고: {dayPred[0]}, 가용재고: {dayPred[1]}, 재고예정: {dayPred[2]}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
     </div>
   );
 }
