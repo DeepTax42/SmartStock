@@ -115,4 +115,16 @@
 - **Manager:** 품절·과잉 리스크 대시보드로 실시간 모니터링  
 - **Data Expert:** 예측 성능 모니터링 및 파라미터 조정  
 - **AI Copilot:** 자연어 질의로 재고 상태 및 예측 결과 조회  
+
+<br><br>
+
+## Ⅲ. 시스템 아키텍처 (System Architecture)
+> SmartStock AI는 Frontend–Backend–AI Model–Database를  
+> **FastAPI + TensorFlow + MySQL + Docker + AWS** 기반으로 통합한 구조입니다.  
+> <br>
+
+![SmartStock AI System Architecture](./assets/Group%2047.png)
 <br>
+
+> 🎨 **Background Color:** `#FAF8F4`  
+> (부드러운 오프화이트톤 — 완전 흰색보다 눈부심을 줄인 디자인용 색상)
