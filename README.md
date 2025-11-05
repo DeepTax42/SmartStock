@@ -188,7 +188,7 @@
 > - 데이터 자동정제 및 발주정책 자동화로 **작업시간 70% 절감**
 
 <br><br>
-## Ⅶ. 폴더 구조 (Folder Tree)
+## Ⅵ. 폴더 구조 (Folder Tree)
 > SmartStock AI의 전체 프로젝트 구조는 **Frontend / Backend / AI / Infra** 중심으로 구성되어 있습니다.  
 > 주요 폴더별 역할만 요약하여 표시했습니다.  
 > <br>
@@ -204,12 +204,79 @@
 
 ---
 
-💡 **설명**
-- 들여쓰기 4칸으로 맞춰서 GitHub에서 완벽히 정렬됨  
-- 주석(`#`)은 그대로 렌더링되므로 코드 블록(```` ````) 안에서 유지  
-- 구조의 깊이는 **3단계까지만 표시** (보기에 딱 좋음)  
+![Folder Tree](./src/assets/folder_tree.png)
+
+<br><br>
+## Ⅶ. 실행 방법 (How to Run)
+> SmartStock AI는 **FastAPI (Backend)** 와 **React/Vite (Frontend)** 로 구성되어 있으며,  
+> 아래 명령어를 순서대로 실행하면 로컬 환경에서 전체 서비스를 구동할 수 있습니다.  
+> <br>
 
 ---
 
-![Folder Tree](./src/assets/folder_tree.png)
+### 🚀 **실행 절차**
 
+```bash
+# 1️⃣ 백엔드 & 프론트엔드 통합 실행 절차
+
+# (1) 백엔드 설정 및 실행
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
+
+# (2) 프론트엔드 설정 및 실행
+cd ../frontend
+npm install
+npm run dev
+```
+
+> ✅ **접속 경로**
+> - **Backend (FastAPI):** http://127.0.0.1:8000  
+>   ↳ Swagger API 문서: http://127.0.0.1:8000/docs  
+> - **Frontend (React/Vite):** http://localhost:5173  
+>   ↳ 웹 대시보드에서 실시간 API 연동 가능  
+> <br>
+
+---
+
+### 🐳 **Docker 통합 실행 (선택사항)**
+
+```bash
+# 루트 디렉토리에서 실행
+docker-compose up --build
+```
+
+> 🧩 **설명:**  
+> - Docker 실행 시 Backend, Frontend, MySQL, MLflow 컨테이너가 동시에 구동됨  
+> - 브라우저에서 `localhost:5173` 접속 시 SmartStock AI 대시보드 자동 로드  
+> - FastAPI, MLflow, DB 연결이 자동 구성되므로 환경 변수 충돌 방지  
+> <br>
+
+---
+
+### **실행 예시 (Optional)**
+
+> 아래는 실제 로컬 환경에서 터미널에서 구동된 예시 화면을 추가할 위치입니다.  
+> (예: `/assets/run_example.png` 경로에 이미지 저장)
+
+```md
+![Run Example](./assets/run_example.png)
+```
+
+---
+
+> 💡 **주의사항**
+> - Python **3.10 이상**, Node **18 이상** 권장  
+> - `.env` 파일에 DB 및 API 키 환경변수 반드시 설정  
+> - MLflow, Docker, AWS CLI 설치 시 **원클릭 배포** 가능  
+> - 포트 충돌 발생 시 `.env`에서 포트 번호 수정 후 재실행  
+> <br>
+
+---
+
+> ✅ **실행 순서 요약**
+> 1. `cd backend && uvicorn main:app --reload`  
+> 2. 새 터미널에서 `cd frontend && npm run dev`  
+> 3. 브라우저에서 `localhost:5173` 접속  
+> 4. Swagger UI로 API 확인 (`127.0.0.1:8000/docs`)  
+> 5. (선택) Docker 통합 실행 `docker-compose up --build`
