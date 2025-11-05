@@ -211,5 +211,5 @@
 
 ---
 
-![Folder Tree](./src/assets/tree.png)
+![Folder Tree](./src/assets/folder_tree.png)
 
