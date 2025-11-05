@@ -287,11 +287,11 @@ npm run dev
 
 | **구분** | **내용 (Description)** |
 |:--|:--|
-| **1️⃣ Transformer 기반 Cross-SKU Learning** | LSTM 기반 모델을 Transformer 구조로 전환하여 SKU 간 상관관계 학습 및 장기 예측 정확도 개선 |
-| **2️⃣ Airflow + MLflow 재학습 자동화** | Airflow DAG을 통해 주기적 데이터 업데이트 및 모델 재학습 파이프라인 구축, MLflow로 성능 자동 추적 |
-| **3️⃣ GPT-4 기반 Copilot 확장** | SQL 질의·리포팅 기능을 결합한 GPT-4 Copilot을 추가, 관리자용 자연어 기반 데이터 탐색 지원 |
-| **4️⃣ ERP/WMS API 연동** | 실거래 ERP·WMS 시스템과의 실시간 데이터 연동으로 상용 환경 대응력 강화 |
-| **5️⃣ Row-Level Security 기반 테넌트 분리** | 다중 고객 환경(멀티테넌시) 지원을 위한 RLS/JWT 기반 접근 제어 및 데이터 격리 구조 구현 |
+| **1. Transformer 기반 Cross-SKU Learning** | LSTM 기반 모델을 Transformer 구조로 전환하여 SKU 간 상관관계 학습 및 장기 예측 정확도 개선 |
+| **2. Airflow + MLflow 재학습 자동화** | Airflow DAG을 통해 주기적 데이터 업데이트 및 모델 재학습 파이프라인 구축, MLflow로 성능 자동 추적 |
+| **3. LLM 고급화** | SQL 질의·리포팅 기능을 결합한 GPT-4 Copilot을 추가, 관리자용 자연어 기반 데이터 탐색 지원 |
+| **4. ERP/WMS API 연동** | 실거래 ERP·WMS 시스템과의 실시간 데이터 연동으로 상용 환경 대응력 강화 |
+| **5. Row-Level Security 기반 테넌트 분리** | 다중 고객 환경(멀티테넌시) 지원을 위한 RLS/JWT 기반 접근 제어 및 데이터 격리 구조 구현 |
 
 ---
 
@@ -301,5 +301,3 @@ npm run dev
 > - **Copilot 확장:** GPT-4 기반 실시간 리포팅 지원  
 > - **엔터프라이즈화:** ERP/WMS 연동 및 멀티테넌트 보안 강화  
 > <br>
-
->  **예정 시기:** 2025년 12월 ~ 2026년 3월 (Phase 2 Prototype 완료 예정)
