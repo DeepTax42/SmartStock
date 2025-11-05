@@ -301,3 +301,34 @@ npm run dev
 > - **Copilot 확장:** GPT-4 기반 실시간 리포팅 지원  
 > - **엔터프라이즈화:** ERP/WMS 연동 및 멀티테넌트 보안 강화  
 > <br>
+
+---
+
+##  제작 및 저작권 (Credits & License)
+> 본 프로젝트는 **Hunters42 팀**이 설계·개발한  
+> **SmartStock AI — AI 기반 재고관리 SaaS 프로토타입**입니다.  
+> 모든 소스코드, 모델, 문서, 시각 자료는 팀 내부 연구 및 포트폴리오 목적에 한해 사용 가능합니다.  
+> <br>
+
+**Project Name:** SmartStock AI  
+**Version:** 1.0 (Phase 1 - MVP Release)  
+**Created by:** Hunters42 Team  
+**Contributors:** 이유진 · 황재성 · 박성호  
+**Development Period:** 2025.10 – 2025.11  
+**Repository:** Private (for academic and demonstration use)  
+**Contact:**  
+ yujin2ee@naver.com  
+ newrancid@naver.com  
+ psh0707@gmail.com  
+<br>
+
+---
+
+###  License
+> © 2025 **Hunters42 Team. All rights reserved.**  
+> Unauthorized reproduction, modification, or commercial use of this project is prohibited.  
+> <br>
+> 본 프로젝트의 모든 내용은 저작권법에 의해 보호됩니다.  
+> 교육·비상업적 목적의 인용은 **출처 표기 시 허용**됩니다.
+
+---
