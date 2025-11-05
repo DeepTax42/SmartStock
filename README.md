@@ -1,5 +1,4 @@
 # A. 프로젝트 개요
-
 > <br>  
 > **SmartStock AI**는 ERP/WMS가 없어도  
 > **CSV/Excel 업로드만으로 “정제 → 예측 → 발주정책(EOQ/ROP/SS) → KPI 시각화”**  
@@ -10,7 +9,7 @@
 > 비전문가도 클릭 몇 번으로 수요예측과 발주 의사결정을 수행할 수 있도록 설계했습니다.  
 > <br>
 
-
+<br><br>
 ## 1. 핵심 가치 제안 (Value Proposition)
 1) **즉시 사용 가능**: 로그인 없이 시작, CSV/Excel 업로드만으로 자동 정제·예측 실행  
 2) **정확도 중심 설계**: **LSTM+CNN 하이브리드**로 SKU 단기 예측, 성능/버전은 **MLflow**로 추적  
@@ -42,6 +41,6 @@
 - **Data/Infra**: MySQL, Docker, AWS EC2/RDS, Colab 학습 파이프라인
 
 <br><br>
-실제 실행 화면
+- 실제 실행 화면
 
 ![SmartStock AI 실행 화면](./src/assets/smartstock_running.png)
