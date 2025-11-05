@@ -266,7 +266,7 @@ npm run dev
 |:--:|:--:|:--|:--|
 | **1** | **이유진** | UI·UX 설계 및 프론트엔드 개발 / 문서 | • React 기반 KPI 대시보드 설계 및 시각화 구현<br>• GPT-4 API 연동 UI(재고관리 어시스턴트) 초안 설계<br>• 사용자 인터페이스 구조 설계 (Figma → JSX 반영)<br>• Chart.js KPI 카드·리스크 알림 컴포넌트 구현<br>• 프로젝트 보고서·기획서·결과물 총괄 작성 |
 | **2** | **황재성** | 프로젝트 총괄 / 백엔드·서버·DB·배포 담당 | • 프로젝트 일정 및 진행 총괄<br>• FastAPI 서버 및 주요 API 엔드포인트 구현<br>  (예: `/upload`, `/forecast`, `/policy`, `/dashboard`)<br>• MySQL DB 스키마 설계 및 연결 관리<br>• Docker Compose 기반 환경 구축 및 배포<br>• GPT-4 응답 엔드포인트 통합 및 Token Handling 관리 |
-| **3** | **박성호** | 🤖 AI 모델링 및 데이터엔지니어링 담당 | • LSTM+CNN 하이브리드 예측 모델 학습 및 성능 검증<br>• 데이터 전처리 모듈 개발 (결측·이상치 자동 처리)<br>• EOQ·ROP·SS 정책 계산 알고리즘 구현 및 검증<br>• MLflow 기반 모델 버전 관리 및 성능 추적<br>• GPT-4 API 통합 결과 분석 및 데이터 포맷 정규화 |
+| **3** | **박성호** |  AI 모델링 및 데이터엔지니어링 담당 | • LSTM+CNN 하이브리드 예측 모델 학습 및 성능 검증<br>• 데이터 전처리 모듈 개발 (결측·이상치 자동 처리)<br>• EOQ·ROP·SS 정책 계산 알고리즘 구현 및 검증<br>• MLflow 기반 모델 버전 관리 및 성능 추적<br>• GPT-4 API 통합 결과 분석 및 데이터 포맷 정규화 |
 
 ---
 
@@ -275,3 +275,31 @@ npm run dev
 > - **황재성:** 프로젝트 리드, 백엔드·DB·배포·API 총괄  
 > - **박성호:** AI 모델링, 데이터 전처리 및 정책 알고리즘 담당  
 > <br>
+
+## Ⅸ. 향후 계획 (Phase 2)
+> SmartStock AI는 MVP 단계(Phase 1)에서 예측·발주·시각화의 전 과정을 자동화했으며,  
+> 다음 단계(Phase 2)에서는 **지능형 재학습, 멀티테넌트, Copilot 확장**을 중심으로 고도화를 추진합니다.  
+> <br>
+
+---
+
+###  **Phase 2 주요 개발 방향**
+
+| **구분** | **내용 (Description)** |
+|:--|:--|
+| **1️⃣ Transformer 기반 Cross-SKU Learning** | LSTM 기반 모델을 Transformer 구조로 전환하여 SKU 간 상관관계 학습 및 장기 예측 정확도 개선 |
+| **2️⃣ Airflow + MLflow 재학습 자동화** | Airflow DAG을 통해 주기적 데이터 업데이트 및 모델 재학습 파이프라인 구축, MLflow로 성능 자동 추적 |
+| **3️⃣ GPT-4 기반 Copilot 확장** | SQL 질의·리포팅 기능을 결합한 GPT-4 Copilot을 추가, 관리자용 자연어 기반 데이터 탐색 지원 |
+| **4️⃣ ERP/WMS API 연동** | 실거래 ERP·WMS 시스템과의 실시간 데이터 연동으로 상용 환경 대응력 강화 |
+| **5️⃣ Row-Level Security 기반 테넌트 분리** | 다중 고객 환경(멀티테넌시) 지원을 위한 RLS/JWT 기반 접근 제어 및 데이터 격리 구조 구현 |
+
+---
+
+>  **Phase 2 목표 요약**
+> - **AI 고도화:** Transformer + Cross-SKU Learning  
+> - **자동화 강화:** Airflow 기반 재학습 파이프라인  
+> - **Copilot 확장:** GPT-4 기반 실시간 리포팅 지원  
+> - **엔터프라이즈화:** ERP/WMS 연동 및 멀티테넌트 보안 강화  
+> <br>
+
+>  **예정 시기:** 2025년 12월 ~ 2026년 3월 (Phase 2 Prototype 완료 예정)
