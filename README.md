@@ -29,7 +29,7 @@
 - **AI/ML**: TensorFlow **LSTM+CNN** 하이브리드, 슬라이딩 윈도우, MLflow 트래킹  
 - **Data/Infra**: MySQL, Docker, AWS EC2/RDS, Colab 학습 파이프라인
 
-<p style="margin-top: 40px;"></p>
-ㄴ> 실제 실행 화면
+<p style="margin-top: 100px;"></p>
+실제 실행 화면
 
 ![SmartStock AI 실행 화면](./src/assets/smartstock_running.png)
