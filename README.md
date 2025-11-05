@@ -123,7 +123,7 @@
 > **FastAPI + TensorFlow + MySQL + Docker + AWS** 기반으로 통합한 구조입니다.  
 > <br>
 
-![SmartStock AI System Architecture](./assets/Group47.png)
+![SmartStock AI System Architecture](./src/assets/Group47.png)
 <br>
 
 > 🎨 **Background Color:** `#FAF8F4`  
