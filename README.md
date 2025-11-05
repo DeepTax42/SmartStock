@@ -124,8 +124,8 @@
 > <br>
 
 ![SmartStock AI System Architecture](./src/assets/Group47.png)
-<br>
 
+<br><br>
 ## Ⅳ. 기술 스택 (Tech Stack)
 > SmartStock AI는 **React + FastAPI + TensorFlow + MySQL + Docker** 기반으로  
 > 클라우드 환경에서 통합 운영되는 AI 재고관리 SaaS 프로토타입입니다.  
@@ -141,4 +141,65 @@
 | **Collaboration** | **Notion**, **Slack**, **Colab** |
 
 <br>
+
+## Ⅴ. 주요 수식 (Key Formulas)
+> SmartStock AI의 발주정책 계산 엔진은 수요의 평균·표준편차·리드타임(L)을 기반으로  
+> **안전재고(SS)**, **재주문점(ROP)**, **발주량(Q)** 을 자동 산출합니다.  
+> <br>
+
+---
+
+### 1. 안전재고 (Safety Stock)
+$$
+SS = z \times \sigma_{demand} \times \sqrt{L}
+$$  
+- **z** : 서비스 수준에 대응하는 표준정규분포값 (예: 95% → z = 1.65)  
+- **σ_demand** : 수요의 표준편차  
+- **L** : 리드타임(Lead Time, 일)  
+> 수요 변동성과 리드타임 불확실성을 반영하여 안전재고를 계산합니다.  
+<br>
+
+---
+
+### 2. 재주문점 (Reorder Point)
+$$
+ROP = \mu_{demand} \times L + SS
+$$  
+- **μ_demand** : 일평균 수요  
+- **L** : 리드타임  
+- **SS** : 안전재고  
+> 평균 수요에 리드타임을 곱해 기본 재고 소요를 구하고,  
+> 여기에 안전재고를 더해 발주 타이밍을 결정합니다.  
+<br>
+
+---
+
+### 3. 발주량 (Order Quantity)
+$$
+Q = \max(0,\, ROP + 목표재고 - 현재가용재고)
+$$  
+- **ROP** : 재주문점  
+- **목표재고(Target Stock)** : 이상적 재고 수준  
+- **현재가용재고(Available Stock)** : 현재 즉시 사용 가능한 수량  
+> 가용재고가 부족할 경우, 목표재고 수준까지 채우기 위한 발주량을 산출합니다.  
+> (음수 방지를 위해 max 함수를 적용)  
+<br>
+
+---
+
+### 4. 적용 예시
+| 변수 | 설명 | 예시값 |
+|:--:|:--|:--:|
+| z | 95% 서비스 수준 | 1.65 |
+| σ_demand | 일별 수요 표준편차 | 20 |
+| μ_demand | 일평균 수요 | 100 |
+| L | 리드타임(일) | 5 |
+
+> 계산 결과  
+> SS = 1.65 × 20 × √5 ≈ 73.8  
+> ROP = 100 × 5 + 73.8 = 573.8  
+> Q = max(0, 573.8 + 800 − 600) = 773.8  
+
+---
+
 
