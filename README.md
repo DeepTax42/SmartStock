@@ -126,5 +126,19 @@
 ![SmartStock AI System Architecture](./src/assets/Group47.png)
 <br>
 
-> 🎨 **Background Color:** `#FAF8F4`  
-> (부드러운 오프화이트톤 — 완전 흰색보다 눈부심을 줄인 디자인용 색상)
+## Ⅳ. 기술 스택 (Tech Stack)
+> SmartStock AI는 **React + FastAPI + TensorFlow + MySQL + Docker** 기반으로  
+> 클라우드 환경에서 통합 운영되는 AI 재고관리 SaaS 프로토타입입니다.  
+> <br>
+
+| **영역** | **기술 구성** |
+|:--|:--|
+| **Frontend** | React (**Vite**, **Tailwind CSS**, **Chart.js**, **Recharts**) |
+| **Backend** | FastAPI (**Python 3.10**), **Pydantic Schema Validation** |
+| **AI Model** | **TensorFlow LSTM + CNN Hybrid** (시계열 예측 엔진) |
+| **DB / Infra** | **MySQL 8.0**, **Docker**, **AWS EC2**, **MLflow** |
+| **Version Control** | **GitHub**, **GitHub Actions** (CI/CD) |
+| **Collaboration** | **Notion**, **Slack**, **Colab** |
+
+<br>
+
