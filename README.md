@@ -142,64 +142,47 @@
 
 <br>
 
-## Ⅴ. 주요 수식 (Key Formulas)
-> SmartStock AI의 발주정책 계산 엔진은 수요의 평균·표준편차·리드타임(L)을 기반으로  
-> **안전재고(SS)**, **재주문점(ROP)**, **발주량(Q)** 을 자동 산출합니다.  
+## Ⅵ. 성능 결과 (Performance Results)
+> SmartStock AI는 실제 테스트 데이터 기준으로 예측 정확도와 운영 효율성 측면에서  
+> 목표 대비 우수한 성능을 달성했습니다.  
 > <br>
 
----
+<table>
+  <thead style="background-color:#F6F8FA;">
+    <tr>
+      <th style="text-align:center; padding:8px;">지표</th>
+      <th style="text-align:center; padding:8px;">목표</th>
+      <th style="text-align:center; padding:8px;">결과</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background-color:#FFFFFF;">
+      <td style="text-align:center; padding:8px;"><b>WAPE</b></td>
+      <td style="text-align:center; padding:8px;">≤ 15%</td>
+      <td style="text-align:center; padding:8px; background-color:#E8F4FF;"><b>14.2%</b></td>
+    </tr>
+    <tr style="background-color:#FFFFFF;">
+      <td style="text-align:center; padding:8px;"><b>Fill Rate</b></td>
+      <td style="text-align:center; padding:8px;">≥ 95%</td>
+      <td style="text-align:center; padding:8px; background-color:#E8F4FF;"><b>96.3%</b></td>
+    </tr>
+    <tr style="background-color:#FFFFFF;">
+      <td style="text-align:center; padding:8px;"><b>품절률</b></td>
+      <td style="text-align:center; padding:8px;">≤ 2%</td>
+      <td style="text-align:center; padding:8px; background-color:#E8F4FF;"><b>1.8%</b></td>
+    </tr>
+    <tr style="background-color:#FFFFFF;">
+      <td style="text-align:center; padding:8px;"><b>작업시간 단축</b></td>
+      <td style="text-align:center; padding:8px;">–</td>
+      <td style="text-align:center; padding:8px; background-color:#E8F4FF;"><b>70% 절감</b></td>
+    </tr>
+  </tbody>
+</table>
 
-### 1. 안전재고 (Safety Stock)
-$$
-SS = z \times \sigma_{demand} \times \sqrt{L}
-$$  
-- **z** : 서비스 수준에 대응하는 표준정규분포값 (예: 95% → z = 1.65)  
-- **σ_demand** : 수요의 표준편차  
-- **L** : 리드타임(Lead Time, 일)  
-> 수요 변동성과 리드타임 불확실성을 반영하여 안전재고를 계산합니다.  
 <br>
 
----
-
-### 2. 재주문점 (Reorder Point)
-$$
-ROP = \mu_{demand} \times L + SS
-$$  
-- **μ_demand** : 일평균 수요  
-- **L** : 리드타임  
-- **SS** : 안전재고  
-> 평균 수요에 리드타임을 곱해 기본 재고 소요를 구하고,  
-> 여기에 안전재고를 더해 발주 타이밍을 결정합니다.  
-<br>
-
----
-
-### 3. 발주량 (Order Quantity)
-$$
-Q = \max(0,\, ROP + 목표재고 - 현재가용재고)
-$$  
-- **ROP** : 재주문점  
-- **목표재고(Target Stock)** : 이상적 재고 수준  
-- **현재가용재고(Available Stock)** : 현재 즉시 사용 가능한 수량  
-> 가용재고가 부족할 경우, 목표재고 수준까지 채우기 위한 발주량을 산출합니다.  
-> (음수 방지를 위해 max 함수를 적용)  
-<br>
-
----
-
-### 4. 적용 예시
-| 변수 | 설명 | 예시값 |
-|:--:|:--|:--:|
-| z | 95% 서비스 수준 | 1.65 |
-| σ_demand | 일별 수요 표준편차 | 20 |
-| μ_demand | 일평균 수요 | 100 |
-| L | 리드타임(일) | 5 |
-
-> 계산 결과  
-> SS = 1.65 × 20 × √5 ≈ 73.8  
-> ROP = 100 × 5 + 73.8 = 573.8  
-> Q = max(0, 573.8 + 800 − 600) = 773.8  
-
----
-
-
+>  **결론 요약:**  
+> - 예측 정확도(WAPE)는 **목표 15% 이하 → 실제 14.2% 달성**  
+> - Fill Rate는 **96.3%** 로 목표 초과 달성  
+> - 품절률은 **1.8%** 로 기준 2% 이하 유지  
+> - 데이터 자동정제 및 발주정책 자동화로 **작업시간 70% 절감**
