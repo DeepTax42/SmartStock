@@ -1,7 +1,15 @@
-# A. 프로젝트 개요
+# A. 프로젝트 개요  
 
-**SmartStock AI**는 ERP/WMS가 없어도 **CSV/Excel 업로드만으로 “정제 → 예측 → 발주정책(EOQ/ROP/SS) → KPI 시각화”**까지 한 번에 처리하는 **AI 재고관리 SaaS 프로토타입**입니다.  
-프론트엔드(React)–백엔드(FastAPI)–예측엔진(TensorFlow LSTM+CNN)–데이터베이스(MySQL)를 **도커 기반 클라우드 환경**에 통합하여, 비전문가도 클릭 몇 번으로 수요예측과 발주 의사결정을 수행할 수 있도록 설계했습니다.
+> <br>  
+> **SmartStock AI**는 ERP/WMS가 없어도  
+> **CSV/Excel 업로드만으로 “정제 → 예측 → 발주정책(EOQ/ROP/SS) → KPI 시각화”**  
+> 까지 한 번에 처리하는 **AI 재고관리 SaaS 프로토타입**입니다.  
+> <br><br>  
+> 프론트엔드(React) – 백엔드(FastAPI) – 예측엔진(TensorFlow LSTM+CNN) – 데이터베이스(MySQL)를  
+> **도커 기반 클라우드 환경**에 통합하여,  
+> 비전문가도 클릭 몇 번으로 수요예측과 발주 의사결정을 수행할 수 있도록 설계했습니다.  
+> <br>
+
 
 ## 1. 핵심 가치 제안 (Value Proposition)
 1) **즉시 사용 가능**: 로그인 없이 시작, CSV/Excel 업로드만으로 자동 정제·예측 실행  
