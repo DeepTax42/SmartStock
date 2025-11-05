@@ -1,223 +1,34 @@
-# SmartStock AI — Phase 3
+# A. 프로젝트 개요
 
-## 프로젝트 개요
-AI 기반 재고관리 SaaS 프로토타입 구축을 목표로 한다.  
-데이터 자동 정제, 예측 정확도 향상, 재고 효율 개선을 통해 운영 효율화와 비용 절감을 추구한다.  
-주요 기능은 데이터 업로드 및 정제, AI 예측·정책 계산, 대시보드 시각화이며,  
-사용자–AI 협업을 통해 데이터 품질과 분석 효율을 극대화한다.
+**SmartStock AI**는 ERP/WMS가 없어도 **CSV/Excel 업로드만으로 “정제 → 예측 → 발주정책(EOQ/ROP/SS) → KPI 시각화”**까지 한 번에 처리하는 **AI 재고관리 SaaS 프로토타입**입니다.  
+프론트엔드(React)–백엔드(FastAPI)–예측엔진(TensorFlow LSTM+CNN)–데이터베이스(MySQL)를 **도커 기반 클라우드 환경**에 통합하여, 비전문가도 클릭 몇 번으로 수요예측과 발주 의사결정을 수행할 수 있도록 설계했습니다.
 
----
+## 1. 핵심 가치 제안 (Value Proposition)
+1) **즉시 사용 가능**: 로그인 없이 시작, CSV/Excel 업로드만으로 자동 정제·예측 실행  
+2) **정확도 중심 설계**: **LSTM+CNN 하이브리드**로 SKU 단기 예측, 성능/버전은 **MLflow**로 추적  
+3) **운영 효율화**: 발주정책(SS/ROP/Q)을 자동 산출하여 **수작업을 대폭 축소**하고 리스크(품절/과잉)를 대시보드로 즉시 파악
 
-## 프로젝트 정보
-- **상태:** 완료  
-- **우선순위:** 높음  
-- **담당자:** 황재성/이유진/박성호 
-- **기간:** 2025.10.17 ~ 2025.10.20  
-- **목표:** MLOps-ready 백엔드 기반 AI 재고관리 SaaS 프로토타입 구축  
+## 2. 사용 시나리오 (End-to-End Flow)
+1) **데이터 업로드**: CSV/Excel 업로드 → 자동 컬럼 인식·결측/이상치 보정·스키마 표준화  
+2) **AI 예측**: SKU/카테고리 단기 예측(**LSTM+CNN**) 수행, 예측분위수(p10/p50/p90) 활용  
+3) **정책 계산**: 수요 분산·리드타임을 반영해 **SS, ROP, Q** 산출 및 **PO Draft** 생성  
+4) **시각화·의사결정**: KPI/리스크 대시보드, Pandas GUI Studio, Copilot 질의응답으로 설명 가능성 강화
 
----
+## 3. 목표 및 성과 (KPI)
+1) **목표**: WAPE ≤ 15%, Fill Rate ≥ 95%, 품절률 ≤ 2%, 클릭 3회 내 주요 작업 완료  
+2) **검증 결과(프로토타입)**: **WAPE 14.2%**, **Fill Rate 96.3%**, **품절률 1.8%**, 사용자 작업시간 **약 70% 절감**
 
-## 1️⃣ 프로젝트 개요
-ERP/WMS 연동이 어려운 기업도 자체 판매 데이터를 업로드하면  
-→ 자동 정제 → 예측 → 발주 추천까지 전 과정을 자동화하는 AI 기반 재고관리 플랫폼을 구축한다.
+## 4. 차별화 포인트 (Why Now / Why Us)
+1) **Human–AI Co-Lab**: 사용자의 최종 결정과 AI 제안을 비교·학습하는 **피드백 루프**로 정책 품질을 지속 개선  
+2) **설명가능·감사가능**: KPI 카드, 리스크 위젯, 정책 수식 공개로 **투명한 의사결정** 지원  
+3) **확장 로드맵**: **Transformer/TFT**, **Auto-Retraining(Airflow+MLflow)**, **ERP/WMS API**, **멀티테넌트 보안(RLS/JWT)** 계획 반영
 
-**환경 구성**
-- Colab + FastAPI + MySQL + TensorFlow (LSTM)
-- Python 기반 예측·최적화 엔진 중심의 SaaS 프로토타입
+## 5. 기술 개요 (Tech Snapshot)
+- **Frontend**: React(Next/Vite), Tailwind, Chart.js/Recharts  
+- **Backend**: FastAPI(Python), OpenAPI/Swagger, Pydantic Validation  
+- **AI/ML**: TensorFlow **LSTM+CNN** 하이브리드, 슬라이딩 윈도우, MLflow 트래킹  
+- **Data/Infra**: MySQL, Docker, AWS EC2/RDS, Colab 학습 파이프라인
 
----
+> 아래 이미지는 실제 배포 환경에서 구동 중인 SmartStock AI의 스크린샷입니다.
 
-## 2️⃣ 프로젝트 목표
-
-| 구분 | 세부 목표 |
-|------|------------|
-| 데이터 자동정제 | 업로드 시 결측치·이상치·중복 자동 탐지 및 처리 |
-| 예측정확도 | 상위 SKU 기준 WAPE ≤ 15%, Fill Rate ≥ 95% |
-| 재고효율 | 불필요 재고 20% 감소, 품절률 2% 이하 |
-| 운영편의성 | 클릭 3번으로 분석 및 발주추천 수행 |
-| 전문가 커스터마이징 | Pandas GUI형 시각화/변환 스튜디오 제공 |
-
----
-
-## 3️⃣ 시스템 구성
-
-**데이터 흐름**  
-Excel/CSV 업로드 → 자동정제 → AI 예측 → 발주정책 계산 → 대시보드 시각화  
-
-**구성 요소**
-- Frontend: React (TypeScript, Vite/Next.js), Tailwind CSS, Chart.js/Recharts  
-- Backend: FastAPI (Python)  
-- Model: LSTM + CNN Hybrid Forecasting Engine  
-- DB: MySQL  
-- Infra: Docker, AWS EC2/RDS, Colab
-
----
-
-## 4️⃣ 주요 기능
-
-### 1. 데이터 업로드 및 정제
-- Excel/CSV 업로드 시 자동 컬럼 감지 및 결측치 처리  
-- 업로드 직후 데이터 상태 리포트 자동 생성
-
-### 2. 컬럼 인식 및 데이터 클렌징
-- SKU, 입출고량, 재고수준, 날짜 컬럼 자동 식별  
-- 시계열 구조 변환 및 단위 정규화 처리  
-- 피처셋 자동 확정 후 예측 엔진으로 전달
-
-### 3. AI 예측 및 정책 계산
-- 예측 엔진: TensorFlow 기반 LSTM + CNN 하이브리드 모델  
-- 전략: SKU·카테고리 단위 시계열 슬라이딩 윈도우 / 롤링 백테스트(WAPE/sMAPE)  
-- 불확실성 추정: 분위수(p10/p50/p90) 기반 안전재고·재주문점 산출  
-- 정책 계산: EOQ/ROP/SS 공식 기반 자동 발주량(Q) 계산  
-- 모델 관리: MLflow 기반 학습 결과·메트릭 버전 관리
-
-### 4. 대시보드 시각화
-- KPI 카드(WAPE, Fill Rate, 재고일수)  
-- 품절·과잉재고 하이라이트  
-- 발주추천서 Excel 자동 생성  
-- Pandas GUI 기반 데이터 변환·피벗·차트 구성 기능  
-
----
-
-## 5️⃣ 핵심 알고리즘 및 KPI
-
-**재고 정책 공식**
-```
-안전재고(SS) = z * σ_demand * sqrt(L)
-재주문점(ROP) = μ_demand * L + SS
-발주량(Q) = max(0, ROP + 목표재고 - 현재가용재고)
-```
-
-| 항목 | 정의 | 목표 |
-|------|------|------|
-| WAPE | 예측 오차율 | ≤ 15% |
-| Fill Rate | 판매 충족률 | ≥ 95% |
-| Stockout Rate | 품절률 | ≤ 2% |
-| Days of Supply | 재고일수 | ≤ 30일 |
-
----
-
-## 6️⃣ 기대효과
-
-| 구분 | 기대효과 | 설명 |
-|------|-----------|------|
-| 운영 효율화 | 재고관리 자동화 | 수작업 대비 70% 시간 단축 |
-| 정확도 향상 | 예측오차 20~30% 감소 | LSTM + CNN 적용 |
-| 비용 절감 | 과잉재고 20% 감소 | 발주정책 최적화 |
-| 리스크 감소 | 품절률 2% 이하 | 안전재고 자동 유지 |
-| 확장성 | 멀티테넌트 SaaS 확장 | 다수 고객사 동시 운영 가능 |
-
----
-
-## 7️⃣ 기능 정의 (Functional Definition)
-
-### 플랫폼 방향성
-> “AI + Human 협업형 데이터 워크스페이스”  
-> 재고 담당자는 LLM 에이전트를 통해 자연어로 질의·분석·의사결정 가능하며,  
-> 데이터 전문가는 코드 및 파라미터 조정을 통해 모델 검증과 튜닝이 가능하다.
-
-### 사용자 스토리
-
-| 사용자 | 주요 목적 | 핵심 행위 |
-|---------|-----------|-----------|
-| Planner | 데이터 업로드 및 정제 | CSV 업로드 → 컬럼 인식 → 결측 보정 |
-| Buyer | 예측 기반 발주 | 예측 결과 확인 → 발주 제안 검토 |
-| Manager | 리스크 모니터링 | 품절/과잉 리스크 확인 및 KPI 검토 |
-| Data Expert | 모델 검증 | 성능 모니터링 및 재학습 |
-| AI Copilot | 설명 및 요약 | 자연어 질의 응답, 정책 추천 |
-
----
-
-## 8️⃣ 시스템 기능 체계
-
-### A. 데이터 워크스페이스
-- CSV/Excel 업로드 및 자동 클렌징  
-- 이상치·중복 탐지 및 자동 보정  
-- 정제 결과 리포트 및 전처리 포맷 변환  
-
-### B. AI 챗봇 (LLM Agent)
-- 재고관리 특화 자연어 인터페이스  
-- 예측 해석, 발주 시뮬레이션, 정책 추천 자동화  
-- 권한별 접근제어 및 개인정보 마스킹  
-
-### C. 예측 및 최적화
-- LSTM + CNN 기반 시계열 예측  
-- EOQ/ROP/SS 기반 발주정책 계산  
-- MLflow 기반 재학습 및 성능 추적  
-
-### D. Human–AI Co-Lab
-- AI 제안 vs 사용자 결정 성과 비교  
-- 피드백 루프를 통한 정책 개선  
-
-### E. 대시보드 & 리스크 모니터링
-- KPI 보드, 리스크 알림, 시나리오 비교  
-- 정책별 EOQ·ROP·SS 시뮬레이션  
-- 모델 버전 및 라인리지 관리  
-
----
-
-## 9️⃣ 향후 개선 방향
-- 외부 요인 반영 (날씨, 시즌, 프로모션 등)  
-- LLM 에이전트 고도화 (Copilot 기능 강화)  
-- Transfer Learning 통한 데이터 희소성 보완  
-- 자동 재학습 파이프라인 구축  
-- ERP/WMS API 연동  
-- Slack/Email 등 협업툴 통합  
-
----
-
-## 10️⃣ 아키텍처 다이어그램
-
-```mermaid
-flowchart LR
-  subgraph Client
-    U[User]
-    FE[React Frontend]
-  end
-
-  subgraph Platform
-    API[Backend API]
-
-    subgraph Workspace
-      UP[Upload CSV/XLSX]
-      CL[Auto Clean and Transform]
-      DS[Data Summary Report]
-      LG[Lineage and Logs]
-    end
-
-    subgraph AICore
-      LLM[LLM Agent]
-      TF[Forecast Engine LSTM CNN]
-      PL[Policy Engine EOQ ROP SS]
-      MF[MLflow Tracking Metrics]
-    end
-
-    subgraph Infra
-      DB[(MySQL Database)]
-      STG[(Object Storage)]
-      Q[Async Worker Queue]
-      AUTH[Auth RBAC]
-    end
-  end
-
-  U --> FE --> API
-  API --> Workspace
-  API --> AICore
-  API --> Infra
-
-  UP --> CL --> DS --> TF --> PL
-  CL --> LG
-  TF --> MF
-  PL --> DB
-  DS --> STG
-  LLM --- FE
-  LLM --> API
-  Q --- TF
-  AUTH --- API
-```
-
----
-
-## License
-본 프로젝트의 코드 및 문서는 교육용·비영리 연구 목적으로 자유롭게 활용할 수 있다.  
-상업적 이용 시 별도의 협의가 필요하다.
+![SmartStock AI 실행 화면](./src/assets/smartstock_running.png)
